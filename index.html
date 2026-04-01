@@ -33,11 +33,29 @@ position:relative;
 #cartIcon{
 position:absolute;
 right:10px;
-font-size:26px;
+top:50%;
+transform:translateY(-50%);
 cursor:pointer;
-color:white;
 }
 
+.cartImg{
+width:26px;
+height:26px;
+}
+
+#cartCount{
+position:absolute;
+top:-6px;
+right:-6px;
+background:red;
+color:white;
+font-size:10px;
+padding:2px 6px;
+border-radius:50%;
+font-weight:bold;
+}
+
+/* GRID */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px;}
 .card{border-radius:12px;overflow:hidden;background:#111827;cursor:pointer;}
 .card img{width:100%;height:110px;object-fit:cover;}
@@ -55,7 +73,6 @@ color:white;
 
 #whatsappBtn{position:fixed;bottom:20px;right:15px;}
 
-/* BACK BUTTON */
 .backBtn{
 background:#1e293b;
 color:white;
@@ -66,7 +83,7 @@ font-size:14px;
 font-weight:bold;
 }
 
-/* SUCCESS TOAST */
+/* TOAST */
 #toast{
 position:fixed;
 top:20px;
@@ -79,7 +96,6 @@ border-radius:25px;
 font-weight:bold;
 box-shadow:0 5px 15px rgba(0,0,0,0.3);
 opacity:0;
-pointer-events:none;
 transition:0.4s;
 z-index:2000;
 }
@@ -99,13 +115,13 @@ top:40px;
 
 <body>
 
-<!-- INSTRUCTION PAGE -->
+<!-- INSTRUCTIONS -->
 <div id="instructionPage" class="page activePage">
 <div class="header">🌶️ Spicy<span>Jar</span></div>
 
 <div class="instructions">
 <h3>🛒 How to Order:</h3>
-• Browse items from menu<br>
+• Browse items<br>
 • Click item<br>
 • Select weight<br>
 • Choose quantity<br>
@@ -123,7 +139,7 @@ top:40px;
 </div>
 </div>
 
-<!-- MENU PAGE -->
+<!-- MENU -->
 <div id="menuPage" class="page">
 
 <div style="position:absolute;left:10px;top:10px;">
@@ -135,7 +151,11 @@ top:40px;
 <div class="tabs" id="mainTabs">
 <div class="tab active" onclick="showMain(event,'pickles')">Pickles</div>
 <div class="tab" onclick="showMain(event,'powder')">Karam Powders</div>
-<div id="cartIcon" onclick="showPage('cartPage')">🛒</div>
+
+<div id="cartIcon" onclick="showPage('cartPage')">
+<img src="cart.png" class="cartImg">
+<span id="cartCount">0</span>
+</div>
 </div>
 
 <div class="tabs" id="subTabs">
@@ -188,9 +208,10 @@ top:40px;
 </a>
 
 <script>
+
 let prices=[],selectedItem="",selectedWeight="",cart=[],quantity=1;
 
-const data={ /* unchanged */
+const data={ /* SAME DATA */
 veg:[
 ["Mango Avakaya","mango.jpg",[599,350,150]],
 ["Gongura Pickle","gongura.jpg",[499,350,150]],
@@ -223,6 +244,8 @@ powder:[
 ["Kobbari Podi","kobari.jpg",[499,350,150]]
 ]
 };
+
+/* FUNCTIONS */
 
 function showPage(id){
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("activePage"));
@@ -287,14 +310,14 @@ function addToCart(){
 if(!selectedWeight)return alert("Select weight");
 
 let index=selectedWeight==="1 KG"?0:selectedWeight==="500g"?1:2;
-let price=prices[index];
+let price=prices[index;
 
 cart.push({item:selectedItem,weight:selectedWeight,price,qty:quantity});
 
 updateCart();
+updateCartCount();
 closePopup();
 
-/* 🎉 TOAST */
 let toast=document.getElementById("toast");
 toast.classList.add("show");
 setTimeout(()=>{toast.classList.remove("show");},2000);
@@ -321,15 +344,21 @@ ${c.item} (${c.weight}) x${c.qty}<br>
 document.getElementById("cartTotal").innerText="Total: ₹"+total;
 }
 
+function updateCartCount(){
+let count=cart.reduce((t,c)=>t+c.qty,0);
+document.getElementById("cartCount").innerText=count;
+}
+
 function removeItem(i){
 cart.splice(i,1);
 updateCart();
+updateCartCount();
 }
 
 function orderWhatsApp(){
 if(cart.length===0)return alert("Cart empty");
 
-let id=Math.floor(Math.random()*100000);
+let id=Math.floor(Math.random()*999)+1;
 
 let msg=`Order ID: ${id}%0A%0AItems:%0A`;
 
@@ -348,6 +377,7 @@ document.getElementById("popup").classList.remove("active");
 }
 
 showMain({target:document.querySelector("#mainTabs .tab")},"pickles");
+
 </script>
 
 </body>
