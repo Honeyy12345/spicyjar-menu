@@ -16,13 +16,24 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#0b1220;color:white;}
 
 .instructions{padding:20px;line-height:1.8;font-size:14px;}
 
-.tabs{display:flex;align-items:center;gap:10px;margin:10px;}
+/* TABS CENTER */
+.tabs{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+margin:10px;
+position:relative;
+}
+
 .tab{padding:8px 14px;border-radius:20px;background:#1e293b;cursor:pointer;font-size:13px;}
 .tab.active{background:#22c55e;}
 
+/* CART ICON */
 #cartIcon{
-margin-left:auto;
-font-size:20px;
+position:absolute;
+right:10px;
+font-size:26px;
 cursor:pointer;
 color:white;
 }
@@ -44,6 +55,39 @@ color:white;
 
 #whatsappBtn{position:fixed;bottom:20px;right:15px;}
 
+/* BACK BUTTON */
+.backBtn{
+background:#1e293b;
+color:white;
+border:none;
+padding:8px 12px;
+border-radius:10px;
+font-size:14px;
+font-weight:bold;
+}
+
+/* SUCCESS TOAST */
+#toast{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+background:#22c55e;
+color:white;
+padding:12px 20px;
+border-radius:25px;
+font-weight:bold;
+box-shadow:0 5px 15px rgba(0,0,0,0.3);
+opacity:0;
+pointer-events:none;
+transition:0.4s;
+z-index:2000;
+}
+#toast.show{
+opacity:1;
+top:40px;
+}
+
 /* MOBILE */
 @media(max-width:500px){
 .header{font-size:20px;}
@@ -60,24 +104,18 @@ color:white;
 <div class="header">🌶️ Spicy<span>Jar</span></div>
 
 <div class="instructions">
-
 <h3>🛒 How to Order:</h3>
 • Browse items from menu<br>
-• Click on any item<br>
-• Select weight (1KG / 500g / 200g)<br>
+• Click item<br>
+• Select weight<br>
 • Choose quantity<br>
-• Click "Add to Cart"<br>
-• Tap cart icon (top right)<br>
-• Review items<br>
-• Click "Order on WhatsApp"<br>
+• Add to cart<br>
+• Click cart icon<br>
+• Order via WhatsApp<br>
 
 <h3>🚚 Delivery Info:</h3>
-• Choose: Home Delivery / Self Pickup<br>
-• Enter Name<br>
-• Enter Phone Number<br>
-• Enter Address (for delivery)<br>
-• Confirm order via WhatsApp<br>
-
+• Home Delivery / Self Pickup<br>
+• Enter Name, Phone, Address<br>
 </div>
 
 <div style="text-align:center">
@@ -89,10 +127,7 @@ color:white;
 <div id="menuPage" class="page">
 
 <div style="position:absolute;left:10px;top:10px;">
-<button onclick="showPage('instructionPage')" 
-style="background:#1e293b;color:white;border:none;padding:6px 10px;border-radius:10px;">
-← Back
-</button>
+<button onclick="showPage('instructionPage')" class="backBtn">← Back</button>
 </div>
 
 <div class="header">🌶️ Spicy<span>Jar</span></div>
@@ -100,7 +135,6 @@ style="background:#1e293b;color:white;border:none;padding:6px 10px;border-radius
 <div class="tabs" id="mainTabs">
 <div class="tab active" onclick="showMain(event,'pickles')">Pickles</div>
 <div class="tab" onclick="showMain(event,'powder')">Karam Powders</div>
-
 <div id="cartIcon" onclick="showPage('cartPage')">🛒</div>
 </div>
 
@@ -146,15 +180,17 @@ style="background:#1e293b;color:white;border:none;padding:6px 10px;border-radius
 <button onclick="addToCart()" class="addCartBtn">Add to Cart</button>
 </div>
 
+<!-- TOAST -->
+<div id="toast">🎉 Added to Cart ✅</div>
+
 <a id="whatsappBtn">
 <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="55">
 </a>
 
 <script>
-
 let prices=[],selectedItem="",selectedWeight="",cart=[],quantity=1;
 
-const data={ /* unchanged data */ 
+const data={ /* unchanged */
 veg:[
 ["Mango Avakaya","mango.jpg",[599,350,150]],
 ["Gongura Pickle","gongura.jpg",[499,350,150]],
@@ -254,9 +290,14 @@ let index=selectedWeight==="1 KG"?0:selectedWeight==="500g"?1:2;
 let price=prices[index];
 
 cart.push({item:selectedItem,weight:selectedWeight,price,qty:quantity});
-alert("Item added ✅");
+
 updateCart();
 closePopup();
+
+/* 🎉 TOAST */
+let toast=document.getElementById("toast");
+toast.classList.add("show");
+setTimeout(()=>{toast.classList.remove("show");},2000);
 }
 
 function updateCart(){
@@ -307,7 +348,6 @@ document.getElementById("popup").classList.remove("active");
 }
 
 showMain({target:document.querySelector("#mainTabs .tab")},"pickles");
-
 </script>
 
 </body>
