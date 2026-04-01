@@ -118,28 +118,42 @@ body {
     cursor: pointer;
 }
 
-/* CART */
+/* 🔥 UPDATED SMALL CART */
 #cartBox {
     position: fixed;
-    top: 70px;
-    right: 10px;
-    width: 200px;
+    top: 60px;
+    right: 8px;
+    width: 150px;
     background: white;
     color: black;
     border-radius: 10px;
-    padding: 10px;
+    padding: 8px;
     z-index: 900;
-    max-height: 250px;
+    max-height: 180px;
     overflow-y: auto;
+    font-size: 11px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+#cartBox h4 {
+    margin: 4px 0;
+    font-size: 13px;
 }
 
 .cartItem {
+    font-size: 10px;
+}
+
+#cartTotal {
     font-size: 12px;
 }
 
-.removeBtn {
-    color: red;
-    cursor: pointer;
+/* MOBILE FIX */
+@media(max-width:500px){
+    #cartBox{
+        width: 130px;
+        top: 55px;
+    }
 }
 
 /* WHATSAPP */
