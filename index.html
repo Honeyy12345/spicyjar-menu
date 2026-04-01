@@ -16,7 +16,6 @@ body{margin:0;font-family:'Poppins',sans-serif;background:#0b1220;color:white;}
 
 .instructions{padding:20px;line-height:1.8;font-size:14px;}
 
-/* TABS CENTER */
 .tabs{
 display:flex;
 justify-content:center;
@@ -121,7 +120,7 @@ top:40px;
 
 <div class="instructions">
 <h3>🛒 How to Order:</h3>
-• Browse items<br>
+• Browse items from menu<br>
 • Click item<br>
 • Select weight<br>
 • Choose quantity<br>
@@ -211,7 +210,7 @@ top:40px;
 
 let prices=[],selectedItem="",selectedWeight="",cart=[],quantity=1;
 
-const data={ /* SAME DATA */
+const data={
 veg:[
 ["Mango Avakaya","mango.jpg",[599,350,150]],
 ["Gongura Pickle","gongura.jpg",[499,350,150]],
@@ -244,8 +243,6 @@ powder:[
 ["Kobbari Podi","kobari.jpg",[499,350,150]]
 ]
 };
-
-/* FUNCTIONS */
 
 function showPage(id){
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("activePage"));
@@ -310,7 +307,7 @@ function addToCart(){
 if(!selectedWeight)return alert("Select weight");
 
 let index=selectedWeight==="1 KG"?0:selectedWeight==="500g"?1:2;
-let price=prices[index;
+let price=prices[index];
 
 cart.push({item:selectedItem,weight:selectedWeight,price,qty:quantity});
 
