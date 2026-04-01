@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SpicyJar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #0b1220;
+    color: white;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    padding: 18px;
+    font-size: 30px;
+    font-weight: bold;
+    background: linear-gradient(90deg,#1e293b,#334155);
+}
+.header span { color:#22c55e; }
+
+/* TABS */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px;
+}
+.tab {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: #1e293b;
+    cursor: pointer;
+}
+.tab.active { background:#22c55e; }
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 8px;
+    padding: 10px;
+}
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #111827;
+}
+.card img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+}
+.name {
+    text-align: center;
+    padding: 6px;
+    font-size: 13px;
+    background: #020617;
+}
+
+/* POPUP */
+.popup {
+    position: fixed;
+    bottom: -100%;
+    left: 0; right: 0;
+    background: white;
+    color: black;
+    border-radius: 20px 20px 0 0;
+    padding: 15px;
+    transition: 0.4s;
+    z-index: 1000;
+}
+.popup.active { bottom:0; }
+
+.popup-content {
+    display: flex;
+    gap: 10px;
+}
+.popup img {
+    width: 40%;
+    border-radius: 10px;
+}
+.right { width:60%; }
+
+#price {
+    color: green;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* SIZE BUTTONS */
+.sizes button {
+    padding:6px 10px;
+    margin:3px;
+    border:none;
+    border-radius:15px;
+    background:#ddd;
+}
+.sizes button.active {
+    background:#22c55e;
+    color:white;
+}
+
+/* ADD BUTTON */
+.addCartBtn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(45deg,#22c55e,#16a34a);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* CART */
+#cartBox {
+    position: fixed;
+    top: 70px;
+    right: 10px;
+    width: 200px;
+    background: white;
+    color: black;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 900;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.cartItem {
+    font-size: 12px;
+}
+
+.removeBtn {
+    color: red;
+    cursor: pointer;
+}
+
+/* WHATSAPP */
+#whatsappBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">🌶️ Spicy<span>Jar</span> 🌶️</div>
+
+<div class="tabs" id="mainTabs">
+<div class="tab active" onclick="showMain(event,'pickles')">Pickles</div>
+<div class="tab" onclick="showMain(event,'powder')">Karam Powders</div>
+</div>
+
+<div class="tabs" id="subTabs" style="display:none;">
+<div class="tab active" onclick="showCategory(event,'veg')">Veg</div>
+<div class="tab" onclick="showCategory(event,'nonveg')">Non-Veg</div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<!-- CART -->
+<div id="cartBox">
+<h4>🛒 Cart</h4>
+<div id="cartItems"></div>
+<h4 id="cartTotal">Total: ₹0</h4>
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+<div onclick="closePopup()">✖</div>
+
+<div class="popup-content">
+<img id="popupImg">
+
+<div class="right">
+<h3 id="title"></h3>
+<p id="price"></p>
+
+<div class="sizes">
+<button onclick="selectWeight(this,0)">1 KG</button>
+<button onclick="selectWeight(this,1)">500g</button>
+<button onclick="selectWeight(this,2)">200g</button>
+</div>
+
+<button onclick="addToCart()" class="addCartBtn">🛒 Add to Cart</button>
+</div>
+</div>
+</div>
+
+<a id="whatsappBtn">
+<img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="55">
+</a>
+
+<script>
+let prices=[],selectedItem="",selectedWeight="",cart=[];
+
+/* FULL DATA */
+const data={
+veg:[
+["Mango Avakaya","mango.jpg",[599,350,150]],
+["Gongura Pickle","gongura.jpg",[499,350,150]],
+["Red Chilli Pickle","red chilly.jpg",[499,350,150]],
+["Tomato Pickle","tomato.jpg",[499,350,150]],
+["Amla Pickle","amla.jpg",[499,350,150]],
+["Ginger Pickle","ginger.jpg",[499,350,150]],
+["Garlic Pickle","garlic.jpg",[599,350,150]],
+["Lemon Pickle","lemon.jpg",[499,350,150]],
+["Gongura Pandu Mirchi","gongura pandumirchi.jpg",[499,350,150]],
+["Drumstick Pickle","drumstick.jpg",[499,350,150]],
+["Brinjal Pickle","Brinjal.jpg",[499,350,150]],
+["Green Chilli","greenchilli2.jpg",[499,350,150]],
+["Chinthakaya Pachadi","chintakaya.jpg",[499,350,150]]
+],
+nonveg:[
+["Chicken Boneless","chicken.jpg",[1300,650,280]],
+["Mutton Boneless","mottonless2.jpg",[2500,1200,350]],
+["Chicken (With Bone)","chickenbone.jpg",[1000,550,240]],
+["Prawns Pickle","prawns.jpg",[1600,750,320]],
+["Mutton (Bone)","muttonbone.jpg",[2000,1000,500]],
+["Fish Pickle","fish.jpg",[1600,900,475]]
+],
+powder:[
+["Kandi Podi","kandi.jpg",[499,350,150]],
+["Karvepaku Karam","karvey.jpg",[499,350,150]],
+["Putnala Podi","putnala.jpg",[499,350,150]],
+["Nalla Karam","nalla.jpg",[499,350,150]],
+["Nuvvula Karam","nuvvula.jpg",[499,350,150]],
+["Kobbari Podi","kobari.jpg",[499,350,150]]
+]
+};
+
+/* FUNCTIONS */
+function showCategory(event,type){
+document.getElementById("grid").innerHTML="";
+if(event){
+document.querySelectorAll("#subTabs .tab").forEach(t=>t.classList.remove("active"));
+event.target.classList.add("active");
+}
+data[type].forEach(item=>{
+document.getElementById("grid").innerHTML+=`
+<div class="card" onclick="openItem('${item[0]}','images/${item[1]}',${JSON.stringify(item[2])})">
+<img src="images/${item[1]}">
+<div class="name">${item[0]}</div>
+</div>`;
+});
+}
+
+function showMain(event,type){
+document.querySelectorAll("#mainTabs .tab").forEach(t=>t.classList.remove("active"));
+event.target.classList.add("active");
+
+if(type==="pickles"){
+document.getElementById("subTabs").style.display="flex";
+showCategory(null,'veg');
+}else{
+document.getElementById("subTabs").style.display="none";
+showCategory(null,'powder');
+}
+}
+
+function openItem(name,img,priceList){
+document.getElementById("popup").classList.add("active");
+document.getElementById("title").innerText=name;
+document.getElementById("popupImg").src=img;
+prices=priceList;
+selectedItem=name;
+document.getElementById("price").innerText="₹"+priceList[0];
+}
+
+function selectWeight(el,index){
+document.querySelectorAll(".sizes button").forEach(b=>b.classList.remove("active"));
+el.classList.add("active");
+selectedWeight=index==0?"1 KG":index==1?"500g":"200g";
+document.getElementById("price").innerText="₹"+prices[index];
+}
+
+function addToCart(){
+if(!selectedWeight)return alert("Select weight");
+
+let index = selectedWeight==="1 KG"?0:selectedWeight==="500g"?1:2;
+let price = prices[index];
+
+cart.push({item:selectedItem,weight:selectedWeight,price:price});
+updateCart();
+}
+
+function updateCart(){
+let box=document.getElementById("cartItems");
+box.innerHTML="";
+let total=0;
+
+cart.forEach((c,i)=>{
+total+=c.price;
+box.innerHTML+=`
+<div class="cartItem">
+${c.item} (${c.weight}) <br>
+₹${c.price}
+<br>
+<span class="removeBtn" onclick="removeItem(${i})">Remove</span>
+<hr>
+</div>`;
+});
+
+document.getElementById("cartTotal").innerText="Total: ₹"+total;
+}
+
+function removeItem(i){
+cart.splice(i,1);
+updateCart();
+}
+
+document.getElementById("whatsappBtn").onclick=function(){
+if(cart.length===0)return alert("Cart empty");
+
+let msg="Order:\n";
+cart.forEach((c,i)=>msg+=`${i+1}. ${c.item} ${c.weight} - ₹${c.price}\n`);
+
+window.open(`https://wa.me/918977398222?text=${encodeURIComponent(msg)}`);
+};
+
+function closePopup(){
+document.getElementById("popup").classList.remove("active");
+}
+
+/* LOAD */
+showMain({target:document.querySelector("#mainTabs .tab")},"pickles");
+</script>
+
+</body>
+</html>
