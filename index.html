@@ -5,197 +5,94 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: #0b1220;
-    color: white;
-}
+body{margin:0;font-family:'Poppins',sans-serif;background:#0b1220;color:white;}
+.header{text-align:center;padding:18px;font-size:26px;font-weight:bold;background:linear-gradient(90deg,#1e293b,#334155);}
+.header span{color:#22c55e;}
+.page{display:none;}
+.activePage{display:block;}
+.btn{padding:12px;background:#22c55e;border:none;border-radius:25px;color:white;font-weight:bold;}
+.instructions{padding:20px;line-height:1.8;}
+#cartIcon{position:fixed;top:15px;right:15px;font-size:22px;cursor:pointer;}
 
-/* HEADER */
-.header {
-    text-align: center;
-    padding: 18px;
-    font-size: 30px;
-    font-weight: bold;
-    background: linear-gradient(90deg,#1e293b,#334155);
-}
-.header span { color:#22c55e; }
+.tabs{display:flex;justify-content:center;gap:10px;margin:10px;}
+.tab{padding:8px 16px;border-radius:20px;background:#1e293b;cursor:pointer;}
+.tab.active{background:#22c55e;}
 
-/* TABS */
-.tabs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 10px;
-}
-.tab {
-    padding: 8px 16px;
-    border-radius: 20px;
-    background: #1e293b;
-    cursor: pointer;
-}
-.tab.active { background:#22c55e; }
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px;}
+.card{border-radius:12px;overflow:hidden;background:#111827;cursor:pointer;}
+.card img{width:100%;height:100px;object-fit:cover;}
+.name{text-align:center;padding:6px;font-size:13px;background:#020617;}
 
-/* GRID */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 8px;
-    padding: 10px;
-}
-.card {
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    background: #111827;
-}
-.card img {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-}
-.name {
-    text-align: center;
-    padding: 6px;
-    font-size: 13px;
-    background: #020617;
-}
+.popup{position:fixed;bottom:-100%;left:0;right:0;background:white;color:black;border-radius:20px 20px 0 0;padding:15px;transition:0.4s;}
+.popup.active{bottom:0;}
 
-/* POPUP */
-.popup {
-    position: fixed;
-    bottom: -100%;
-    left: 0; right: 0;
-    background: white;
-    color: black;
-    border-radius: 20px 20px 0 0;
-    padding: 15px;
-    transition: 0.4s;
-    z-index: 1000;
-}
-.popup.active { bottom:0; }
+.sizes button{padding:6px 10px;margin:3px;border:none;border-radius:15px;}
+.sizes button.active{background:#22c55e;color:white;}
 
-.popup-content {
-    display: flex;
-    gap: 10px;
-}
-.popup img {
-    width: 40%;
-    border-radius: 10px;
-}
-.right { width:60%; }
+.addCartBtn{width:100%;padding:10px;border:none;border-radius:25px;background:#22c55e;color:white;font-weight:bold;}
 
-#price {
-    color: green;
-    font-size: 18px;
-    font-weight: bold;
-}
+.removeBtn{color:red;font-weight:bold;cursor:pointer;}
 
-/* SIZE BUTTONS */
-.sizes button {
-    padding:6px 10px;
-    margin:3px;
-    border:none;
-    border-radius:15px;
-    background:#ddd;
-}
-.sizes button.active {
-    background:#22c55e;
-    color:white;
-}
-
-/* ADD BUTTON */
-.addCartBtn {
-    margin-top: 10px;
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 25px;
-    background: linear-gradient(45deg,#22c55e,#16a34a);
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* 🔥 UPDATED SMALL CART */
-#cartBox {
-    position: fixed;
-    top: 60px;
-    right: 8px;
-    width: 150px;
-    background: white;
-    color: black;
-    border-radius: 10px;
-    padding: 8px;
-    z-index: 900;
-    max-height: 180px;
-    overflow-y: auto;
-    font-size: 11px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-#cartBox h4 {
-    margin: 4px 0;
-    font-size: 13px;
-}
-
-.cartItem {
-    font-size: 10px;
-}
-
-#cartTotal {
-    font-size: 12px;
-}
-
-/* MOBILE FIX */
-@media(max-width:500px){
-    #cartBox{
-        width: 130px;
-        top: 55px;
-    }
-}
-
-/* WHATSAPP */
-#whatsappBtn {
-    position: fixed;
-    bottom: 20px;
-    right: 15px;
-}
+#whatsappBtn{position:fixed;bottom:20px;right:15px;}
 </style>
 </head>
 
 <body>
 
-<div class="header">🌶️ Spicy<span>Jar</span> 🌶️</div>
+<!-- INSTRUCTION PAGE -->
+<div id="instructionPage" class="page activePage">
+<div class="header">🌶️ Spicy<span>Jar</span></div>
+<div class="instructions">
+<h3>How to Order:</h3>
+• Browse items<br>
+• Select weight & quantity<br>
+• Add to cart<br>
+• Open cart (top right)<br>
+• Order via WhatsApp<br>
+
+<h3>Delivery Info:</h3>
+• Choose Delivery / Pickup<br>
+• Provide Name, Phone, Address<br>
+</div>
+
+<div style="text-align:center">
+<button class="btn" onclick="showPage('menuPage')">View Menu</button>
+</div>
+</div>
+
+<!-- MENU PAGE -->
+<div id="menuPage" class="page">
+<div class="header">🌶️ Spicy<span>Jar</span></div>
+<div id="cartIcon" onclick="showPage('cartPage')">🛒</div>
 
 <div class="tabs" id="mainTabs">
 <div class="tab active" onclick="showMain(event,'pickles')">Pickles</div>
 <div class="tab" onclick="showMain(event,'powder')">Karam Powders</div>
 </div>
 
-<div class="tabs" id="subTabs" style="display:none;">
+<div class="tabs" id="subTabs">
 <div class="tab active" onclick="showCategory(event,'veg')">Veg</div>
 <div class="tab" onclick="showCategory(event,'nonveg')">Non-Veg</div>
 </div>
 
 <div class="grid" id="grid"></div>
+</div>
 
-<!-- CART -->
-<div id="cartBox">
-<h4>🛒 Cart</h4>
+<!-- CART PAGE -->
+<div id="cartPage" class="page">
+<div class="header">🛒 Your Cart</div>
 <div id="cartItems"></div>
-<h4 id="cartTotal">Total: ₹0</h4>
+<h3 id="cartTotal">Total: ₹0</h3>
+
+<button class="btn" onclick="orderWhatsApp()">Order on WhatsApp</button>
+<br><br>
+<button class="btn" onclick="showPage('menuPage')">Back</button>
 </div>
 
 <!-- POPUP -->
 <div class="popup" id="popup">
 <div onclick="closePopup()">✖</div>
 
-<div class="popup-content">
-<img id="popupImg">
-
-<div class="right">
 <h3 id="title"></h3>
 <p id="price"></p>
 
@@ -205,9 +102,14 @@ body {
 <button onclick="selectWeight(this,2)">200g</button>
 </div>
 
-<button onclick="addToCart()" class="addCartBtn">🛒 Add to Cart</button>
+<div>
+<b>Quantity:</b><br>
+<button onclick="changeQty(-1)">-</button>
+<span id="qty">1</span>
+<button onclick="changeQty(1)">+</button>
 </div>
-</div>
+
+<button onclick="addToCart()" class="addCartBtn">Add to Cart</button>
 </div>
 
 <a id="whatsappBtn">
@@ -215,9 +117,10 @@ body {
 </a>
 
 <script>
-let prices=[],selectedItem="",selectedWeight="",cart=[];
 
-/* FULL DATA */
+let prices=[],selectedItem="",selectedWeight="",cart=[],quantity=1;
+
+/* FULL DATA (UNCHANGED) */
 const data={
 veg:[
 ["Mango Avakaya","mango.jpg",[599,350,150]],
@@ -252,22 +155,13 @@ powder:[
 ]
 };
 
-/* FUNCTIONS */
-function showCategory(event,type){
-document.getElementById("grid").innerHTML="";
-if(event){
-document.querySelectorAll("#subTabs .tab").forEach(t=>t.classList.remove("active"));
-event.target.classList.add("active");
-}
-data[type].forEach(item=>{
-document.getElementById("grid").innerHTML+=`
-<div class="card" onclick="openItem('${item[0]}','images/${item[1]}',${JSON.stringify(item[2])})">
-<img src="images/${item[1]}">
-<div class="name">${item[0]}</div>
-</div>`;
-});
+/* PAGE SWITCH */
+function showPage(id){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("activePage"));
+document.getElementById(id).classList.add("activePage");
 }
 
+/* MAIN CATEGORY */
 function showMain(event,type){
 document.querySelectorAll("#mainTabs .tab").forEach(t=>t.classList.remove("active"));
 event.target.classList.add("active");
@@ -281,15 +175,44 @@ showCategory(null,'powder');
 }
 }
 
+/* SUB CATEGORY */
+function showCategory(event,type){
+let grid=document.getElementById("grid");
+grid.innerHTML="";
+
+if(event){
+document.querySelectorAll("#subTabs .tab").forEach(t=>t.classList.remove("active"));
+event.target.classList.add("active");
+}
+
+data[type].forEach(item=>{
+grid.innerHTML+=`
+<div class="card" onclick="openItem('${item[0]}','images/${item[1]}',${JSON.stringify(item[2])})">
+<img src="images/${item[1]}">
+<div class="name">${item[0]}</div>
+</div>`;
+});
+}
+
+/* POPUP */
 function openItem(name,img,priceList){
 document.getElementById("popup").classList.add("active");
 document.getElementById("title").innerText=name;
-document.getElementById("popupImg").src=img;
 prices=priceList;
 selectedItem=name;
+quantity=1;
+document.getElementById("qty").innerText=1;
 document.getElementById("price").innerText="₹"+priceList[0];
 }
 
+/* QUANTITY */
+function changeQty(val){
+quantity+=val;
+if(quantity<1) quantity=1;
+document.getElementById("qty").innerText=quantity;
+}
+
+/* WEIGHT */
 function selectWeight(el,index){
 document.querySelectorAll(".sizes button").forEach(b=>b.classList.remove("active"));
 el.classList.add("active");
@@ -297,28 +220,35 @@ selectedWeight=index==0?"1 KG":index==1?"500g":"200g";
 document.getElementById("price").innerText="₹"+prices[index];
 }
 
+/* ADD CART */
 function addToCart(){
 if(!selectedWeight)return alert("Select weight");
 
-let index = selectedWeight==="1 KG"?0:selectedWeight==="500g"?1:2;
-let price = prices[index];
+let index=selectedWeight==="1 KG"?0:selectedWeight==="500g"?1:2;
+let price=prices[index];
 
-cart.push({item:selectedItem,weight:selectedWeight,price:price});
+cart.push({item:selectedItem,weight:selectedWeight,price,qty:quantity});
+
+alert("Item added ✅");
+
 updateCart();
+closePopup();
 }
 
+/* CART */
 function updateCart(){
 let box=document.getElementById("cartItems");
 box.innerHTML="";
 let total=0;
 
 cart.forEach((c,i)=>{
-total+=c.price;
+let itemTotal=c.price*c.qty;
+total+=itemTotal;
+
 box.innerHTML+=`
-<div class="cartItem">
-${c.item} (${c.weight}) <br>
-₹${c.price}
-<br>
+<div>
+${c.item} (${c.weight}) x${c.qty}<br>
+₹${itemTotal}<br>
 <span class="removeBtn" onclick="removeItem(${i})">Remove</span>
 <hr>
 </div>`;
@@ -332,14 +262,23 @@ cart.splice(i,1);
 updateCart();
 }
 
-document.getElementById("whatsappBtn").onclick=function(){
+/* ORDER */
+function orderWhatsApp(){
 if(cart.length===0)return alert("Cart empty");
 
-let msg="Order:\n";
-cart.forEach((c,i)=>msg+=`${i+1}. ${c.item} ${c.weight} - ₹${c.price}\n`);
+let id="SJ"+Math.floor(Math.random()*100000);
 
-window.open(`https://wa.me/918977398222?text=${encodeURIComponent(msg)}`);
-};
+let msg=`Order ID: ${id}%0A%0AItems:%0A`;
+
+cart.forEach((c,i)=>{
+msg+=`${i+1}. ${c.item} ${c.weight} x${c.qty} - ₹${c.price*c.qty}%0A`;
+});
+
+msg+=`%0ATotal: ₹${cart.reduce((t,c)=>t+(c.price*c.qty),0)}%0A%0A`;
+msg+=`Name:%0APhone:%0AAddress:%0ADelivery/Pickup:%0A`;
+
+window.open(`https://wa.me/918977398222?text=${msg}`);
+}
 
 function closePopup(){
 document.getElementById("popup").classList.remove("active");
@@ -347,6 +286,7 @@ document.getElementById("popup").classList.remove("active");
 
 /* LOAD */
 showMain({target:document.querySelector("#mainTabs .tab")},"pickles");
+
 </script>
 
 </body>
